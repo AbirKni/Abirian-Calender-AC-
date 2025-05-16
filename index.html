@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abirian Calendar</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f9f9f9; color: #333; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 1.5rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; }
+    .dark { background: #1e1e1e; color: #f5f5f5; }
+    .quote { margin-top: 1rem; font-style: italic; color: #555; }
+    label, input, button, select { display: block; width: 100%; margin-top: 1rem; }
+    input, select { padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; }
+    button { background: #007bff; color: white; border: none; cursor: pointer; padding: 0.75rem; border-radius: 5px; }
+    button:hover { background: #0056b3; }
+    .toggle { margin-top: 1rem; cursor: pointer; text-align: right; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container" id="calendarApp">
+    <h1>Abirian Calendar</h1>
+    <div id="today"></div>
+    <div class="quote" id="dailyQuote"></div><h2>Convert English Date to Abirian</h2>
+<label for="gregDate">Gregorian Date:</label>
+<input type="date" id="gregDate" />
+<button onclick="convertToAbirian()">Convert</button>
+<div id="convertedAbirian"></div>
+
+<h2>Convert Abirian Date to English</h2>
+<label>AC Year:</label>
+<input type="number" id="acYear" min="1" />
+<label>Month (1-4):</label>
+<input type="number" id="acMonth" min="1" max="4" />
+<label>Day (1-150):</label>
+<input type="number" id="acDay" min="1" max="150" />
+<button onclick="convertToGregorian()">Convert</button>
+<div id="convertedGregorian"></div>
+
+<div class="toggle" onclick="toggleDark()">Toggle Dark Mode</div>
+
+  </div>  <script>
+    const monthNames = ["Atromi", "Gomto", "Kango", "Clearend"];
+    const dayNames = ["Alo", "Balo", "Calo", "Dalo", "Elo", "Fellow", "Gelo", "Hello", "ILo", "Jela"];
+    const startDate = new Date("2025-05-16");
+
+    const quotes = [
+      "Go touch some books.",
+      "Time flows like Atromi winds.",
+      "Your mind is the sharpest blade.",
+      "Let Gelo guide your focus.",
+      "Rest is productive too.",
+      "A page a day keeps ignorance away.",
+      "Be bolder than Fellow’s fire.",
+      "Hello to greatness today!",
+      "Even Jela days pass eventually.",
+      "You’re doing better than you think.",
+      "Keep going, Clearend is near."
+    ];
+
+    function getAbirianFromDate(date) {
+      const diff = Math.floor((date - startDate) / (1000 * 60 * 60 * 24));
+      const year = Math.floor(diff / 600) + 1;
+      const dayOfYear = diff % 600;
+      const month = Math.floor(dayOfYear / 150);
+      const dayInMonth = dayOfYear % 150 + 1;
+      const dayName = dayNames[(dayInMonth - 1) % 10];
+      return `AC ${year} — ${monthNames[month]} — ${dayName} ${dayInMonth}`;
+    }
+
+    function getQuoteFromDay(day) {
+      return quotes[day % quotes.length];
+    }
+
+    function convertToAbirian() {
+      const inputDate = new Date(document.getElementById("gregDate").value);
+      const abirian = getAbirianFromDate(inputDate);
+      document.getElementById("convertedAbirian").textContent = abirian + ". " + getQuoteFromDay(Math.floor((inputDate - startDate) / (1000 * 60 * 60 * 24)));
+    }
+
+    function convertToGregorian() {
+      const y = parseInt(document.getElementById("acYear").value);
+      const m = parseInt(document.getElementById("acMonth").value) - 1;
+      const d = parseInt(document.getElementById("acDay").value) - 1;
+      const totalDays = (y - 1) * 600 + m * 150 + d;
+      const gregDate = new Date(startDate);
+      gregDate.setDate(startDate.getDate() + totalDays);
+      document.getElementById("convertedGregorian").textContent = gregDate.toDateString();
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+
+    function showToday() {
+      const today = new Date();
+      const abirian = getAbirianFromDate(today);
+      const quote = getQuoteFromDay(Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
+      document.getElementById("today").textContent = abirian;
+      document.getElementById("dailyQuote").textContent = quote;
+    }
+
+    showToday();
+  </script></body>
+</html>
